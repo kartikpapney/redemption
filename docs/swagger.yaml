@@ -1,0 +1,228 @@
+definitions:
+  models.CreateProductRequest:
+    properties:
+      manufacturer:
+        type: string
+      name:
+        type: string
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.PaginatedRequest:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+    type: object
+  models.RefreshRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  models.RegisterRequest:
+    properties:
+      email:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  models.Response:
+    properties:
+      data:
+        additionalProperties: {}
+        type: object
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  models.VerifyRequest:
+    properties:
+      token:
+        type: string
+    required:
+    - token
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: login a user
+      parameters:
+      - description: Login Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Login
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: refreshes a user token
+      parameters:
+      - description: Refresh Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Refresh
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: verifies user email
+      parameters:
+      - description: Verify Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Verify
+      tags:
+      - auth
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: check server
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Ping
+      tags:
+      - ping
+  /product:
+    get:
+      consumes:
+      - application/json
+      description: creates a new note
+      parameters:
+      - description: Get All Products Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Products
+      tags:
+      - product
+    post:
+      consumes:
+      - application/json
+      description: creates a new product
+      parameters:
+      - description: Create Product Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Product
+      tags:
+      - product
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: get logged in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Logged In User
+      tags:
+      - user
+swagger: "2.0"
