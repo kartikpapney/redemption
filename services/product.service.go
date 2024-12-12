@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"errors"
 	db "redemption/models/db"
 
@@ -31,7 +32,7 @@ func FindProductById(productId primitive.ObjectID) (*db.Product, error) {
 	return product, nil
 }
 
-func GetAllProducts(createdBy primitive.ObjectID, limit int64, offset int64) ([]*db.Product, error) {
+func GetAllProducts(createdBy primitive.ObjectID, limit int64, offset int64) ([]*db.Product, int64, error) {
 	var products []*db.Product
 
 	opts := &options.FindOptions{
@@ -39,10 +40,25 @@ func GetAllProducts(createdBy primitive.ObjectID, limit int64, offset int64) ([]
 		Skip:  &offset,
 	}
 
-	err := mgm.Coll(&db.Product{}).SimpleFind(&products, bson.M{"created_by": createdBy}, opts)
+	total, err := mgm.Coll(&db.Product{}).CountDocuments(context.Background(), bson.M{"created_by": createdBy})
 	if err != nil {
-		return nil, errors.New("cannot find products")
+		return nil, -1, errors.New("failed to count products: " + err.Error())
 	}
 
-	return products, nil
+	err = mgm.Coll(&db.Product{}).SimpleFind(&products, bson.M{"created_by": createdBy}, opts)
+	if err != nil {
+		return nil, -1, errors.New("cannot find products")
+	}
+
+	return products, total, nil
+}
+
+func DeleteAllProducts(createdBy primitive.ObjectID) error {
+
+	_, err := mgm.Coll(&db.Product{}).DeleteMany(context.Background(), bson.M{"created_by": createdBy})
+	if err != nil {
+		return errors.New("failed to delete products: " + err.Error())
+	}
+
+	return nil
 }

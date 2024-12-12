@@ -20,6 +20,22 @@ definitions:
       page:
         type: integer
     type: object
+  models.PaginatedResponse:
+    properties:
+      data:
+        additionalProperties: {}
+        type: object
+      limit:
+        type: integer
+      message:
+        type: string
+      page:
+        type: integer
+      success:
+        type: boolean
+      total:
+        type: integer
+    type: object
   models.RefreshRequest:
     properties:
       token:
@@ -150,6 +166,26 @@ paths:
       tags:
       - ping
   /product:
+    delete:
+      consumes:
+      - application/json
+      description: deletes all product of user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete All Products
+      tags:
+      - product
     get:
       consumes:
       - application/json
@@ -167,11 +203,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/models.PaginatedResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/models.PaginatedResponse'
       security:
       - ApiKeyAuth: []
       summary: Get All Products

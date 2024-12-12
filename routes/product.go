@@ -20,5 +20,11 @@ func ProductRoute(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
 			validators.PaginationRequestValidator(),
 			controllers.GetAllProducts,
 		)
+
+		product.DELETE(
+			"",
+			controllers.DeleteAllProduct,
+		)
+
 	}
 }

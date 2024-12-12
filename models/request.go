@@ -107,7 +107,7 @@ func NewPaginatedRequest( limit int64, page int64) (*PaginatedRequest, error) {
 }
 
 type RequestMetadata struct {
-	UserId primitive.ObjectID `json:"id" bson:"idHex"`
+	UserId primitive.ObjectID `json:"id" bson:"id"`
 }
 
 func NewRequestMetadata(userId primitive.ObjectID) (*RequestMetadata, error) {
