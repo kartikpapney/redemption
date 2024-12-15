@@ -1,4 +1,4 @@
-package models
+package requestModel
 
 import (
 	"regexp"
@@ -69,9 +69,8 @@ func (a VerifyRequest) Validate() error {
 	)
 }
 
-
 type CreateProductRequest struct {
-	Name   string `json:"name"`
+	Name         string `json:"name"`
 	Manufacturer string `json:"manufacturer"`
 }
 
@@ -82,16 +81,15 @@ func (a CreateProductRequest) Validate() error {
 	)
 }
 
-
 type PaginatedRequest struct {
 	Limit int64 `form:"limit" json:"limit"`
 	Page  int64 `form:"page" json:"page"`
 }
 
-func NewPaginatedRequest( limit int64, page int64) (*PaginatedRequest, error) {
-	paginatedRequest := PaginatedRequest {
+func NewPaginatedRequest(limit int64, page int64) (*PaginatedRequest, error) {
+	paginatedRequest := PaginatedRequest{
 		Limit: int64(limit),
-		Page: int64(page),
+		Page:  int64(page),
 	}
 
 	err := validation.ValidateStruct(&paginatedRequest,
@@ -106,12 +104,27 @@ func NewPaginatedRequest( limit int64, page int64) (*PaginatedRequest, error) {
 	return &paginatedRequest, nil
 }
 
+type PathIdRequest struct {
+	Id primitive.ObjectID `form:"id"`
+}
+
+func NewPathIdRequest(id string) (*PathIdRequest, error) {
+	result, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	pathIdRequest := &PathIdRequest{
+		Id: result,
+	}
+	return pathIdRequest, nil
+}
+
 type RequestMetadata struct {
-	UserId primitive.ObjectID `json:"id" bson:"id"`
+	UserId primitive.ObjectID `json:"id" bson:"_id"`
 }
 
 func NewRequestMetadata(userId primitive.ObjectID) (*RequestMetadata, error) {
-	return &RequestMetadata {
+	return &RequestMetadata{
 		UserId: userId,
 	}, nil
 }

@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"net/http"
-	"redemption/models"
 	db "redemption/models/db"
+	requestModel "redemption/models/request"
+	responseModel "redemption/models/response"
 	"redemption/services"
 	"strings"
 
@@ -18,15 +19,15 @@ import (
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        req  body      models.RegisterRequest true "Register Request"
-// @Success      200  {object}  models.Response
-// @Failure      400  {object}  models.Response
+// @Param        req  body      requestModel.RegisterRequest true "Register Request"
+// @Success      200  {object}  responseModel.Response
+// @Failure      400  {object}  responseModel.Response
 // @Router       /auth/register [post]
 func Register(c *gin.Context) {
-	var requestBody models.RegisterRequest
+	var requestBody requestModel.RegisterRequest
 	_ = c.ShouldBindBodyWith(&requestBody, binding.JSON)
 
-	response := &models.Response{
+	response := &responseModel.Response{
 		StatusCode: http.StatusBadRequest,
 		Success:    false,
 	}
@@ -65,23 +66,21 @@ func Register(c *gin.Context) {
 	response.SendResponse(c)
 }
 
-
-
 // Login godoc
 // @Summary      Login
 // @Description  login a user
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        req  body      models.LoginRequest true "Login Request"
-// @Success      200  {object}  models.Response
-// @Failure      400  {object}  models.Response
+// @Param        req  body      requestModel.LoginRequest true "Login Request"
+// @Success      200  {object}  responseModel.Response
+// @Failure      400  {object}  responseModel.Response
 // @Router       /auth/login [post]
 func Login(c *gin.Context) {
-	var requestBody models.LoginRequest
+	var requestBody requestModel.LoginRequest
 	_ = c.ShouldBindBodyWith(&requestBody, binding.JSON)
 
-	response := &models.Response{
+	response := &responseModel.Response{
 		StatusCode: http.StatusBadRequest,
 		Success:    false,
 	}
@@ -124,15 +123,15 @@ func Login(c *gin.Context) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        req  body      models.RefreshRequest true "Refresh Request"
-// @Success      200  {object}  models.Response
-// @Failure      400  {object}  models.Response
+// @Param        req  body      requestModel.RefreshRequest true "Refresh Request"
+// @Success      200  {object}  responseModel.Response
+// @Failure      400  {object}  responseModel.Response
 // @Router       /auth/refresh [post]
 func Refresh(c *gin.Context) {
-	var requestBody models.RefreshRequest
+	var requestBody requestModel.RefreshRequest
 	_ = c.ShouldBindBodyWith(&requestBody, binding.JSON)
 
-	response := &models.Response{
+	response := &responseModel.Response{
 		StatusCode: http.StatusBadRequest,
 		Success:    false,
 	}
@@ -153,7 +152,7 @@ func Refresh(c *gin.Context) {
 	}
 
 	// delete old token
-	err = services.DeleteTokenById(token.ID)
+	err = services.DeleteTokenById(token.Id)
 	if err != nil {
 		response.Message = err.Error()
 		response.SendResponse(c)
@@ -172,23 +171,21 @@ func Refresh(c *gin.Context) {
 	response.SendResponse(c)
 }
 
-
-
 // Register godoc
 // @Summary      Verify
 // @Description  verifies user email
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        req  body      models.VerifyRequest true "Verify Request"
-// @Success      200  {object}  models.Response
-// @Failure      400  {object}  models.Response
+// @Param        req  body      requestModel.VerifyRequest true "Verify Request"
+// @Success      200  {object}  responseModel.Response
+// @Failure      400  {object}  responseModel.Response
 // @Router       /auth/register [post]
 func VerifyUser(c *gin.Context) {
-	var requestQuery models.VerifyRequest
+	var requestQuery requestModel.VerifyRequest
 	_ = c.ShouldBindQuery(&requestQuery)
 
-	response := &models.Response{
+	response := &responseModel.Response{
 		StatusCode: http.StatusBadRequest,
 		Success:    false,
 	}
@@ -199,8 +196,8 @@ func VerifyUser(c *gin.Context) {
 		response.SendResponse(c)
 		return
 	}
-	
-	user, err := services.VerifyUserEmail(token.User);
+
+	user, err := services.VerifyUserEmail(token.User)
 	if err != nil {
 		response.Message = err.Error()
 		response.SendResponse(c)
@@ -226,4 +223,3 @@ func VerifyUser(c *gin.Context) {
 	}
 	response.SendResponse(c)
 }
-

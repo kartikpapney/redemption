@@ -1,26 +1,101 @@
 definitions:
-  models.CreateProductRequest:
+  models.PreferredUnit:
+    properties:
+      height:
+        type: string
+      weight:
+        type: string
+    type: object
+  requestModel.CreateExerciseRequest:
+    properties:
+      name:
+        type: string
+      other:
+        items:
+          type: string
+        type: array
+      primary:
+        items:
+          type: string
+        type: array
+      secondary:
+        items:
+          type: string
+        type: array
+    type: object
+  requestModel.CreateProductRequest:
     properties:
       manufacturer:
         type: string
       name:
         type: string
     type: object
-  models.LoginRequest:
+  requestModel.LoginRequest:
     properties:
       email:
         type: string
       password:
         type: string
     type: object
-  models.PaginatedRequest:
+  requestModel.PaginatedRequest:
     properties:
       limit:
         type: integer
       page:
         type: integer
     type: object
-  models.PaginatedResponse:
+  requestModel.RefreshRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  requestModel.RegisterRequest:
+    properties:
+      email:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  requestModel.UpdateExerciseRequest:
+    properties:
+      name:
+        type: string
+      other:
+        items:
+          type: string
+        type: array
+      primary:
+        items:
+          type: string
+        type: array
+      secondary:
+        items:
+          type: string
+        type: array
+    type: object
+  requestModel.UserUpdateRequest:
+    properties:
+      dob:
+        type: string
+      location:
+        type: string
+      preferred_exercise:
+        type: string
+      preferred_unit:
+        $ref: '#/definitions/models.PreferredUnit'
+    type: object
+  requestModel.VerifyRequest:
+    properties:
+      token:
+        type: string
+    required:
+    - token
+    type: object
+  responseModel.PaginatedResponse:
     properties:
       data:
         additionalProperties: {}
@@ -36,23 +111,7 @@ definitions:
       total:
         type: integer
     type: object
-  models.RefreshRequest:
-    properties:
-      token:
-        type: string
-    type: object
-  models.RegisterRequest:
-    properties:
-      email:
-        type: string
-      location:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-    type: object
-  models.Response:
+  responseModel.Response:
     properties:
       data:
         additionalProperties: {}
@@ -61,13 +120,6 @@ definitions:
         type: string
       success:
         type: boolean
-    type: object
-  models.VerifyRequest:
-    properties:
-      token:
-        type: string
-    required:
-    - token
     type: object
 info:
   contact: {}
@@ -83,18 +135,18 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/models.LoginRequest'
+          $ref: '#/definitions/requestModel.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
       summary: Login
       tags:
       - auth
@@ -109,18 +161,18 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/models.RefreshRequest'
+          $ref: '#/definitions/requestModel.RefreshRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
       summary: Refresh
       tags:
       - auth
@@ -135,21 +187,270 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/models.VerifyRequest'
+          $ref: '#/definitions/requestModel.VerifyRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
       summary: Verify
       tags:
       - auth
+  /equipment:
+    delete:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - equipment
+    get:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - equipment
+    post:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - equipment
+    put:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - equipment
+  /exercise:
+    get:
+      consumes:
+      - application/json
+      description: get all exercise
+      parameters:
+      - description: Get All Exercise Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Exercise
+      tags:
+      - exercise
+    post:
+      consumes:
+      - application/json
+      description: create exercise
+      parameters:
+      - description: Create Exercise Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.CreateExerciseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Exercise
+      tags:
+      - exercise
+  /exercise/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete exercise request
+      parameters:
+      - description: Exercise ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Exercise Request
+      tags:
+      - exercise
+    get:
+      consumes:
+      - application/json
+      description: get exercise
+      parameters:
+      - description: Exercise ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Exercise
+      tags:
+      - exercise
+    put:
+      consumes:
+      - application/json
+      description: update exercise
+      parameters:
+      - description: Exercise ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Exercise Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.UpdateExerciseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Exercise
+      tags:
+      - exercise
   /ping:
     get:
       consumes:
@@ -161,7 +462,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
       summary: Ping
       tags:
       - ping
@@ -176,11 +477,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
       security:
       - ApiKeyAuth: []
       summary: Delete All Products
@@ -196,18 +497,18 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/models.PaginatedRequest'
+          $ref: '#/definitions/requestModel.PaginatedRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.PaginatedResponse'
+            $ref: '#/definitions/responseModel.PaginatedResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.PaginatedResponse'
+            $ref: '#/definitions/responseModel.PaginatedResponse'
       security:
       - ApiKeyAuth: []
       summary: Get All Products
@@ -223,23 +524,132 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/models.CreateProductRequest'
+          $ref: '#/definitions/requestModel.CreateProductRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
       security:
       - ApiKeyAuth: []
       summary: Create Product
       tags:
       - product
+  /tag:
+    delete:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - tag
+    get:
+      consumes:
+      - application/json
+      description: get all tag
+      parameters:
+      - description: Get All Tag Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Tag
+      tags:
+      - tag
+    post:
+      consumes:
+      - application/json
+      description: create a tag
+      parameters:
+      - description: Create Tag Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create A Tag
+      tags:
+      - tag
+    put:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - tag
   /user:
     get:
       consumes:
@@ -251,14 +661,150 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/responseModel.Response'
       security:
       - ApiKeyAuth: []
       summary: Get Logged In User
       tags:
       - user
+    put:
+      consumes:
+      - application/json
+      description: update logged in user
+      parameters:
+      - description: Update User Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.UserUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Logged In User
+      tags:
+      - user
+  /workout:
+    delete:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - workout
+    get:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - workout
+    post:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - workout
+    put:
+      consumes:
+      - application/json
+      description: get all equipment
+      parameters:
+      - description: Get All Equipment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/requestModel.PaginatedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responseModel.PaginatedResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Equipment
+      tags:
+      - workout
 swagger: "2.0"

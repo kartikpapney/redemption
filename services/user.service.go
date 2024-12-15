@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	db "redemption/models/db"
+	requestModel "redemption/models/request"
+	"time"
 
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
@@ -18,8 +20,9 @@ func CreateUser(name string, email string, plainPassword string, location string
 		return nil, errors.New("cannot generate hashed password")
 	}
 
-	user := db.NewUser(email, string(password), name, db.RoleUser, location)
+	user := db.NewUser(name, email, db.RoleUser, string(password))
 	err = mgm.Coll(user).Create(user)
+
 	if err != nil {
 		return nil, errors.New("cannot create new user")
 	}
@@ -28,7 +31,10 @@ func CreateUser(name string, email string, plainPassword string, location string
 }
 
 func FindUserById(userId primitive.ObjectID) (*db.User, error) {
-	user := &db.User{}
+	user := &db.User{
+		Id: userId,
+	}
+
 	err := mgm.Coll(user).FindByID(userId, user)
 	if err != nil {
 		return nil, errors.New("cannot find user")
@@ -61,7 +67,7 @@ func CheckUserMail(email string) error {
 }
 
 func VerifyUserEmail(userId primitive.ObjectID) (*db.User, error) {
-	
+
 	user := &db.User{}
 	userCollection := mgm.Coll(user)
 	context := context.Background()
@@ -85,3 +91,45 @@ func VerifyUserEmail(userId primitive.ObjectID) (*db.User, error) {
 	return user, nil
 }
 
+func UpdateUserById(userId primitive.ObjectID, update requestModel.UserUpdateRequest) error {
+	user := &db.User{}
+	updateQuery := bson.M{
+		"$set": bson.M{
+			"dob":                update.DOB,
+			"preferred_unit":     update.PreferredUnit,
+			"preferred_exercise": update.PreferredExercise,
+			"location":           update.Location,
+		},
+	}
+	_, err := mgm.Coll(user).UpdateByID(context.Background(), userId, updateQuery)
+	if err != nil {
+		return errors.New("cannot update user")
+	}
+
+	return nil
+}
+
+func UpdateMeasurementById(userId primitive.ObjectID, preferredUnit db.PreferredUnit, update requestModel.UserMeasurementTrackRequest) error {
+
+	updateQuery := bson.M{
+		"$push": bson.M{
+			"height": db.HeightEntry{
+				Date:   time.Now(),
+				Height: update.Height,
+				Unit:   preferredUnit.Height,
+			},
+			"weight": db.WeightEntry{
+				Date:   time.Now(),
+				Weight: update.Weight,
+				Unit:   preferredUnit.Weight,
+			},
+		},
+	}
+
+	_, err := mgm.Coll(&db.User{}).UpdateByID(context.Background(), userId, updateQuery)
+	if err != nil {
+		return errors.New("cannot update user")
+	}
+
+	return nil
+}

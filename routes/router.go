@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"redemption/docs"
 	"redemption/middlewares"
-	"redemption/models"
+	responseModel "redemption/models/response"
 	"redemption/services"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +25,11 @@ func New() *gin.Engine {
 		PingRoute(v1)
 		AuthRoute(v1)
 		UserRoute(v1, middlewares.JWTMiddleware())
-		ProductRoute(v1, middlewares.JWTMiddleware())
+		// ProductRoute(v1, middlewares.JWTMiddleware())
+		ExerciseRoute(v1, middlewares.JWTMiddleware())
+		// EquipmentRoute(v1, middlewares.JWTMiddleware())
+		// TagRoute(v1, middlewares.JWTMiddleware())
+		// WorkoutRoute(v1, middlewares.JWTMiddleware())
 	}
 
 	docs.SwaggerInfo.BasePath = v1.BasePath()
@@ -41,11 +45,11 @@ func initRoute(r *gin.Engine) {
 	r.HandleMethodNotAllowed = true
 
 	r.NoRoute(func(c *gin.Context) {
-		models.SendErrorResponse(c, http.StatusNotFound, c.Request.RequestURI+" not found")
+		responseModel.SendErrorResponse(c, http.StatusNotFound, c.Request.RequestURI+" not found")
 	})
 
 	r.NoMethod(func(c *gin.Context) {
-		models.SendErrorResponse(c, http.StatusMethodNotAllowed, c.Request.Method+" is not allowed here")
+		responseModel.SendErrorResponse(c, http.StatusMethodNotAllowed, c.Request.Method+" is not allowed here")
 	})
 }
 

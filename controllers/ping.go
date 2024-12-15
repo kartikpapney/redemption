@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"net/http"
-	"redemption/models"
+	responseModel "redemption/models/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,14 +13,25 @@ import (
 // @Tags         ping
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  models.Response
+// @Success      200  {object}  responseModel.Response
 // @Router       /ping [get]
 func Ping(c *gin.Context) {
-	response := &models.Response{
+	response := &responseModel.Response{
 		StatusCode: http.StatusOK,
 		Success:    true,
 		Message:    "Working!",
 	}
+
+	// timestamp := time.Now().Unix()
+	// services.Set(context.Background(), "time", timestamp)
+	// value, err := services.Get(c, "time")
+	// if err != nil {
+	// 	response.StatusCode = http.StatusInternalServerError
+	// 	response.Success = false
+	// 	response.Message = "Failed to set timestamp in cache"
+	// 	response.SendResponse(c)
+	// 	return
+	// }
 
 	response.SendResponse(c)
 }

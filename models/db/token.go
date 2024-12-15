@@ -11,11 +11,12 @@ import (
 const (
 	TokenTypeAccess  = "access"
 	TokenTypeRefresh = "refresh"
-	TokenTypeEmail = "email"
+	TokenTypeEmail   = "email"
 )
 
 type Token struct {
 	mgm.DefaultModel `bson:",inline"`
+	Id               primitive.ObjectID `form:"id" json:"id" bson:"_id"`
 	User             primitive.ObjectID `json:"user" bson:"user"`
 	Token            string             `json:"token" bson:"token"`
 	Type             string             `json:"type" bson:"type"`
@@ -29,6 +30,7 @@ func (model *Token) GetResponseJson() gin.H {
 
 func NewToken(userId primitive.ObjectID, tokenString string, tokenType string, expiresAt time.Time) *Token {
 	return &Token{
+		Id:          primitive.NewObjectID(),
 		User:        userId,
 		Token:       tokenString,
 		Type:        tokenType,
@@ -38,5 +40,5 @@ func NewToken(userId primitive.ObjectID, tokenString string, tokenType string, e
 }
 
 func (model *Token) CollectionName() string {
-	return "tokens"
+	return "token"
 }

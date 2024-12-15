@@ -21,5 +21,5 @@ func NewProduct(name string, manufacturer string, createdBy primitive.ObjectID) 
 }
 
 func (model *Product) CollectionName() string {
-	return "products"
+	return "product"
 }

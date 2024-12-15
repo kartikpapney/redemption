@@ -2,7 +2,8 @@ package validators
 
 import (
 	"net/http"
-	"redemption/models"
+	requestModel "redemption/models/request"
+	responseModel "redemption/models/response"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -16,9 +17,17 @@ func PathIdValidator() gin.HandlerFunc {
 		id := c.Param("id")
 		err := validation.Validate(id, is.MongoID)
 		if err != nil {
-			models.SendErrorResponse(c, http.StatusBadRequest, "invalid id: "+id)
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, "invalid id: "+id)
 			return
 		}
+
+		idHex, err := requestModel.NewPathIdRequest(id)
+		if err != nil {
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		c.Set("id", idHex)
 
 		c.Next()
 	}
@@ -26,25 +35,25 @@ func PathIdValidator() gin.HandlerFunc {
 
 func PaginationRequestValidator() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		
+
 		limit := c.DefaultQuery("limit", "10")
 		limitInt, err := strconv.Atoi(limit)
 		if err != nil || limitInt > 10 || limitInt <= 0 {
-			models.SendErrorResponse(c, http.StatusBadRequest, "invalid limit, should be a positive integer not greater than 10")
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, "invalid limit, should be a positive integer not greater than 10")
 			return
 		}
 
 		page := c.DefaultQuery("page", "0")
 		pageInt, err := strconv.Atoi(page)
 		if err != nil || pageInt < 0 {
-			models.SendErrorResponse(c, http.StatusBadRequest, "invalid page, should be a non-negative integer")
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, "invalid page, should be a non-negative integer")
 			return
 		}
 
-		paginatedRequest, err := models.NewPaginatedRequest(int64(limitInt), int64(pageInt))
+		paginatedRequest, err := requestModel.NewPaginatedRequest(int64(limitInt), int64(pageInt))
 		if err != nil {
-			models.SendErrorResponse(c, http.StatusBadRequest, err.Error())
-			return;
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
 		}
 
 		c.Set("pagination", paginatedRequest)

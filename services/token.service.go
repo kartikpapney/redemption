@@ -20,7 +20,7 @@ func CreateToken(user *db.User, tokenType string, expiresAt time.Time) (*db.Toke
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
-			Subject:   user.ID.Hex(),
+			Subject:   user.Id.Hex(),
 		},
 	}
 
@@ -30,7 +30,7 @@ func CreateToken(user *db.User, tokenType string, expiresAt time.Time) (*db.Toke
 		return nil, errors.New("cannot create access token")
 	}
 
-	tokenModel := db.NewToken(user.ID, tokenString, tokenType, expiresAt)
+	tokenModel := db.NewToken(user.Id, tokenString, tokenType, expiresAt)
 	err = mgm.Coll(tokenModel).Create(tokenModel)
 	if err != nil {
 		return nil, errors.New("cannot save access token to db")
@@ -95,7 +95,6 @@ func VerifyToken(token string, tokenType string) (*db.Token, error) {
 
 	return tokenModel, nil
 }
-
 
 func GenerateVerifyUserToken(user *db.User) (*db.Token, error) {
 	accessExpiresAt := time.Now().Add(time.Duration(Config.EmailVerifyExpirationMinutes) * time.Minute)

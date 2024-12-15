@@ -1,11 +1,12 @@
 package validators
 
 import (
-	"redemption/models"
+	"net/http"
+	responseModel "redemption/models/response"
+
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	"net/http"
 )
 
 func GetAllProductValidator() gin.HandlerFunc {
@@ -14,7 +15,7 @@ func GetAllProductValidator() gin.HandlerFunc {
 		id := c.Param("id")
 		err := validation.Validate(id, is.MongoID)
 		if err != nil {
-			models.SendErrorResponse(c, http.StatusBadRequest, "invalid id: "+id)
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, "invalid id: "+id)
 			return
 		}
 

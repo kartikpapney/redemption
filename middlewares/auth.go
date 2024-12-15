@@ -2,8 +2,9 @@ package middlewares
 
 import (
 	"net/http"
-	"redemption/models"
 	db "redemption/models/db"
+	requestModel "redemption/models/request"
+	responseModel "redemption/models/response"
 	"redemption/services"
 
 	"github.com/gin-gonic/gin"
@@ -14,11 +15,10 @@ func JWTMiddleware() gin.HandlerFunc {
 		token := c.GetHeader("Authorization")
 		tokenModel, err := services.VerifyToken(token, db.TokenTypeAccess)
 		if err != nil {
-			models.SendErrorResponse(c, http.StatusUnauthorized, err.Error())
+			responseModel.SendErrorResponse(c, http.StatusUnauthorized, err.Error())
 			return
 		}
-		
-		reqMetadata, _ := models.NewRequestMetadata(tokenModel.User)
+		reqMetadata, _ := requestModel.NewRequestMetadata(tokenModel.User)
 		c.Set("reqMetadata", reqMetadata)
 
 		c.Next()

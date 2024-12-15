@@ -2,7 +2,8 @@ package validators
 
 import (
 	"net/http"
-	"redemption/models"
+	requestModel "redemption/models/request"
+	responseModel "redemption/models/response"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -11,11 +12,11 @@ import (
 func RegisterValidator() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var registerRequest models.RegisterRequest
+		var registerRequest requestModel.RegisterRequest
 		_ = c.ShouldBindBodyWith(&registerRequest, binding.JSON)
 
 		if err := registerRequest.Validate(); err != nil {
-			models.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -26,11 +27,11 @@ func RegisterValidator() gin.HandlerFunc {
 func LoginValidator() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var loginRequest models.LoginRequest
+		var loginRequest requestModel.LoginRequest
 		_ = c.ShouldBindBodyWith(&loginRequest, binding.JSON)
 
 		if err := loginRequest.Validate(); err != nil {
-			models.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -41,11 +42,11 @@ func LoginValidator() gin.HandlerFunc {
 func RefreshValidator() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var refreshRequest models.RefreshRequest
+		var refreshRequest requestModel.RefreshRequest
 		_ = c.ShouldBindBodyWith(&refreshRequest, binding.JSON)
 
 		if err := refreshRequest.Validate(); err != nil {
-			models.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -56,11 +57,11 @@ func RefreshValidator() gin.HandlerFunc {
 func VerifyUserValidator() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var verifyRequest models.VerifyRequest
+		var verifyRequest requestModel.VerifyRequest
 		_ = c.ShouldBindQuery(&verifyRequest)
-		
+
 		if err := verifyRequest.Validate(); err != nil {
-			models.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+			responseModel.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 

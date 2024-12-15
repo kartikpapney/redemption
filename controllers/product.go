@@ -2,7 +2,8 @@ package controllers
 
 import (
 	"net/http"
-	"redemption/models"
+	requestModel "redemption/models/request"
+	responseModel "redemption/models/response"
 	"redemption/services"
 
 	"github.com/gin-gonic/gin"
@@ -15,20 +16,20 @@ import (
 // @Tags         product
 // @Accept       json
 // @Produce      json
-// @Param        req  body      models.PaginatedRequest true "Get All Products Request"
-// @Success      200  {object}  models.PaginatedResponse
-// @Failure      400  {object}  models.PaginatedResponse
+// @Param        req  body      requestModel.PaginatedRequest true "Get All Products Request"
+// @Success      200  {object}  responseModel.PaginatedResponse
+// @Failure      400  {object}  responseModel.PaginatedResponse
 // @Router       /product [get]
 // @Security     ApiKeyAuth
 func GetAllProducts(c *gin.Context) {
 
 	reqMetadataContext, _ := c.Get("reqMetadata")
-	var reqMetadata *models.RequestMetadata = reqMetadataContext.(*models.RequestMetadata)
+	var reqMetadata *requestModel.RequestMetadata = reqMetadataContext.(*requestModel.RequestMetadata)
 
-	var paginated models.PaginatedRequest
+	var paginated requestModel.PaginatedRequest
 	_ = c.ShouldBindQuery(&paginated)
 
-	response := &models.PaginatedResponse{
+	response := &responseModel.PaginatedResponse{
 		StatusCode: http.StatusBadRequest,
 		Success:    false,
 	}
@@ -58,20 +59,20 @@ func GetAllProducts(c *gin.Context) {
 // @Tags         product
 // @Accept       json
 // @Produce      json
-// @Param        req  body      models.CreateProductRequest true "Create Product Request"
-// @Success      200  {object}  models.Response
-// @Failure      400  {object}  models.Response
+// @Param        req  body      requestModel.CreateProductRequest true "Create Product Request"
+// @Success      200  {object}  responseModel.Response
+// @Failure      400  {object}  responseModel.Response
 // @Router       /product [post]
 // @Security     ApiKeyAuth
 func CreateProduct(c *gin.Context) {
 
 	reqMetadataContext, _ := c.Get("reqMetadata")
-	var reqMetadata *models.RequestMetadata = reqMetadataContext.(*models.RequestMetadata)
+	var reqMetadata *requestModel.RequestMetadata = reqMetadataContext.(*requestModel.RequestMetadata)
 
-	var requestQuery models.CreateProductRequest
+	var requestQuery requestModel.CreateProductRequest
 	_ = c.ShouldBindBodyWith(&requestQuery, binding.JSON)
 
-	response := &models.Response{
+	response := &responseModel.Response{
 		StatusCode: http.StatusBadRequest,
 		Success:    false,
 	}
@@ -97,19 +98,19 @@ func CreateProduct(c *gin.Context) {
 // @Tags         product
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  models.Response
-// @Failure      400  {object}  models.Response
+// @Success      200  {object}  responseModel.Response
+// @Failure      400  {object}  responseModel.Response
 // @Router       /product [delete]
 // @Security     ApiKeyAuth
 func DeleteAllProduct(c *gin.Context) {
 
 	reqMetadataContext, _ := c.Get("reqMetadata")
-	var reqMetadata *models.RequestMetadata = reqMetadataContext.(*models.RequestMetadata)
+	var reqMetadata *requestModel.RequestMetadata = reqMetadataContext.(*requestModel.RequestMetadata)
 
-	var requestQuery models.CreateProductRequest
+	var requestQuery requestModel.CreateProductRequest
 	_ = c.ShouldBindBodyWith(&requestQuery, binding.JSON)
 
-	response := &models.Response{
+	response := &responseModel.Response{
 		StatusCode: http.StatusBadRequest,
 		Success:    false,
 	}

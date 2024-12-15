@@ -2,11 +2,12 @@ package controllers
 
 import (
 	"net/http"
-	"redemption/models"
+	requestModel "redemption/models/request"
+	responseModel "redemption/models/response"
 	"redemption/services"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/gin-gonic/gin/binding"
 )
 
 // CreateNewNote godoc
@@ -15,25 +16,19 @@ import (
 // @Tags         user
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  models.Response
-// @Failure      400  {object}  models.Response
+// @Success      200  {object}  responseModel.Response
+// @Failure      400  {object}  responseModel.Response
 // @Router       /user [get]
 // @Security     ApiKeyAuth
 func GetUser(c *gin.Context) {
-	
-	response := &models.Response{
+	response := &responseModel.Response{
 		StatusCode: http.StatusBadRequest,
 		Success:    false,
 	}
 
-	userId, exists := c.Get("userId")
-	if !exists {
-		response.Message = "cannot get user"
-		response.SendResponse(c)
-		return
-	}
-
-	user, err := services.FindUserById(userId.(primitive.ObjectID))
+	reqMetadataContext, _ := c.Get("reqMetadata")
+	var reqMetadata *requestModel.RequestMetadata = reqMetadataContext.(*requestModel.RequestMetadata)
+	user, err := services.FindUserById(reqMetadata.UserId)
 	if err != nil {
 		response.Message = err.Error()
 		response.SendResponse(c)
@@ -45,5 +40,65 @@ func GetUser(c *gin.Context) {
 	response.Data = gin.H{
 		"user": user,
 	}
+	response.SendResponse(c)
+}
+
+// CreateNewNote godoc
+// @Summary      Update Logged In User
+// @Description  update logged in user
+// @Tags         user
+// @Accept       json
+// @Produce      json
+// @Param        req  body      requestModel.UserUpdateRequest true "Update User Request"
+// @Success      200  {object}  responseModel.Response
+// @Failure      400  {object}  responseModel.Response
+// @Router       /user [put]
+// @Security     ApiKeyAuth
+func UpdateUser(c *gin.Context) {
+
+	reqMetadataContext, _ := c.Get("reqMetadata")
+	var reqMetadata *requestModel.RequestMetadata = reqMetadataContext.(*requestModel.RequestMetadata)
+
+	var requestBody requestModel.UserUpdateRequest
+	_ = c.ShouldBindBodyWith(&requestBody, binding.JSON)
+
+	response := &responseModel.Response{
+		StatusCode: http.StatusBadRequest,
+		Success:    false,
+	}
+	err := services.UpdateUserById(reqMetadata.UserId, requestBody)
+	if err != nil {
+		response.Message = err.Error()
+		response.SendResponse(c)
+		return
+	}
+
+	response.StatusCode = http.StatusOK
+	response.Success = true
+	response.SendResponse(c)
+}
+
+func UpdateMeasurement(c *gin.Context) {
+
+	reqMetadataContext, _ := c.Get("reqMetadata")
+	var reqMetadata *requestModel.RequestMetadata = reqMetadataContext.(*requestModel.RequestMetadata)
+
+	var requestBody requestModel.UserMeasurementTrackRequest
+	_ = c.ShouldBindBodyWith(&requestBody, binding.JSON)
+
+	response := &responseModel.Response{
+		StatusCode: http.StatusBadRequest,
+		Success:    false,
+	}
+	user, _ := services.FindUserById(reqMetadata.UserId)
+	err := services.UpdateMeasurementById(reqMetadata.UserId, user.PreferredUnit, requestBody)
+	if err != nil {
+		response.Message = err.Error()
+		response.SendResponse(c)
+		return
+	}
+
+	response.StatusCode = http.StatusOK
+	response.Success = true
 	response.SendResponse(c)
 }

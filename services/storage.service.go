@@ -58,3 +58,21 @@ func CheckRedisConnection() {
 
 	log.Println("Connected to Redis!")
 }
+
+func Set(ctx context.Context, key string, value interface{}) error {
+	err := redisCache.Set(&cache.Item{
+		Ctx: ctx,
+		Key:   key,
+		Value: value,
+	})
+	return err
+}
+
+func Get(ctx context.Context, key string) (interface{}, error) {
+	item := cache.Item{};
+	err := redisCache.Get(ctx, key, &item);
+	if err != nil {
+		return nil, err
+	}
+	return item.Value, nil
+}
